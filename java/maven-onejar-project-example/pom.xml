@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.junx</groupId>
+	<artifactId>maven-onejar-project-example</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<url>http://github.com/junxspace</url>
+	<name>${project.artifactId}</name>
+	<description>maven-onejar-project-example</description>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>net.junX</name>
+		<url>https://github.com/junxspace/foundation</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>junX</name>
+			<id>junX</id>
+			<email>junxspace@hotmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>+8</timezone>
+		</developer>
+	</developers>
+
+	<properties>
+		<!-- Base Properties -->
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.deploy.skip>false</maven.deploy.skip>
+
+		<!-- Maven Plugin Versions -->
+		<maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+		<maven-source-plugin.version>2.4</maven-source-plugin.version>
+		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+		<maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
+		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+		<maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
+
+		<!-- Dependency Versions -->
+		<!-- Base Dependencies -->
+		<junit.version>4.12</junit.version>
+
+		<!-- Webapp Project Dependencies -->
+		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+		<jstl.version>1.2</jstl.version>
+		<standard.version>1.1.2</standard.version>
+
+		<plexus-compiler-eclipse.version>2.7</plexus-compiler-eclipse.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- **************************************** -->
+			<!-- base dependencies -->
+			<!-- **************************************** -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<!-- **************************************** -->
+			<!-- webapp project dependencies -->
+			<!-- **************************************** -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<!-- jstl & el supports -->
+			<dependency>
+				<groupId>jstl</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>taglibs</groupId>
+				<artifactId>standard</artifactId>
+				<version>${standard.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<compilerId>eclipse</compilerId>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<compilerArguments>
+						<source>${maven.compiler.source}</source>
+						<target>${maven.compiler.target}</target>
+						<encoding>${project.build.sourceEncoding}</encoding>
+						<fork>true</fork>
+						<compilerArgument>-XDignore.symbol.file</compilerArgument>
+					</compilerArguments>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.plexus</groupId>
+						<artifactId>plexus-compiler-eclipse</artifactId>
+						<version>${plexus-compiler-eclipse.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<includes>
+						<include>**/*Tests.java</include>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
+				<configuration>
+					<skip>${maven.deploy.skip}</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven-dependency-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
